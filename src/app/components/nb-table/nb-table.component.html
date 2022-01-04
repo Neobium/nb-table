@@ -1,0 +1,7 @@
+<ng-container *ngIf="(datasource$ | async) as datasource">
+  <span>Neobium table</span>
+  &nbsp;
+  <span>Compilation time: {{ endTime }}ms</span>
+  <!-- style="width: 100%;" -->
+  <nb-table [dataSource]="datasource.entities"></nb-table>
+</ng-container>

@@ -10,7 +10,6 @@
           "style": "scss"
         },
         "@schematics/angular:application": {
-          "strict": true
         }
       },
       "root": "",
@@ -115,6 +114,37 @@
             "production": {
               "devServerTarget": "neobium-table:serve:production"
             }
+          }
+        }
+      }
+    },
+    "nb-table": {
+      "projectType": "library",
+      "root": "projects/nb-table",
+      "sourceRoot": "projects/nb-table/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/nb-table/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/nb-table/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/nb-table/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/nb-table/src/test.ts",
+            "tsConfig": "projects/nb-table/tsconfig.spec.json",
+            "karmaConfig": "projects/nb-table/karma.conf.js"
           }
         }
       }

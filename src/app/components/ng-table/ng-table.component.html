@@ -1,0 +1,27 @@
+<ng-container *ngIf="(datasource$ | async) as datasource">
+  <span>Angular table</span>
+  &nbsp;
+  <span>Compilation time: {{ endTime }}ms</span>
+  <!-- style="width: 100%;" -->
+  <table mat-table
+         [dataSource]="datasource.entities">
+    <ng-container *ngFor="let column of columns; let index = index"
+                  [matColumnDef]="column">
+      <th mat-header-cell
+          *matHeaderCellDef
+          (click)="sortByColumn(column)">
+        {{ column }}
+      </th>
+      <td mat-cell
+          *matCellDef="let dataItem">
+        {{ dataItem[column] }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row
+        *matHeaderRowDef="columns"></tr>
+    <tr mat-row
+        *matRowDef="let dataItem; columns: columns"
+        (click)="clickRow(dataItem)"></tr>
+  </table>
+</ng-container>
