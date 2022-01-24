@@ -1,7 +1,7 @@
 <ng-container *ngIf="(datasource$ | async) as datasource">
   <span>Angular table</span>
   &nbsp;
-  <span>Compilation time: {{ endTime }}ms</span>
+  <!-- <span>Compilation time: {{ endTime }}ms</span> -->
   <!-- style="width: 100%;" -->
   <table mat-table
          [dataSource]="datasource.entities">

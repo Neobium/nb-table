@@ -104,13 +104,6 @@
         }
       ]
     },
-    "variable-name": {
-      "options": [
-        "ban-keywords",
-        "check-format",
-        "allow-pascal-case"
-      ]
-    },
     "whitespace": {
       "options": [
         "check-branch",
@@ -139,13 +132,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      ["app", "nb"],
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      ["app", "nb"],
       "kebab-case"
     ]
   }
