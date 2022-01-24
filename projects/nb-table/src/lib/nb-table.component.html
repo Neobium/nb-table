@@ -1,1 +1,30 @@
-Koek koek
+<div cdkDropList></div>
+<div class="nb-table" *ngIf="(dataSource$ | async) as dataSource; else noData">
+  <!-- <ng-content></ng-content> -->
+
+  <!-- Table header -->
+  <ng-container *ngFor="let headerRow of headerRows">
+    <!-- Header columns -->
+    <ng-container *ngFor="let columnHeader of columnHeaders"
+                  [ngTemplateOutlet]="columnHeader.template"
+                  [ngTemplateOutletContext]="{ $implicit: headerRow }">
+    </ng-container>
+  </ng-container>
+
+  <!-- Table rows -->
+  <ng-container *ngFor="let dataItem of dataSource">
+    <!-- {{ dataItem }} -->
+    <ng-container *ngFor="let row of tableRows">
+      <ng-container *ngFor="let cell of tableCells"
+                    [ngTemplateOutlet]="cell.template"
+                    [ngTemplateOutletContext]="{ $implicit: row, dataItem: dataItem }">
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #noData>
+  <div>
+    No data provided, you koek
+  </div>
+</ng-template>

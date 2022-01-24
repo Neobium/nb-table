@@ -1,7 +1,21 @@
 <ng-container *ngIf="(datasource$ | async) as datasource">
   <span>Neobium table</span>
   &nbsp;
-  <span>Compilation time: {{ endTime }}ms</span>
+  <!-- <span>Compilation time: {{ endTime }}ms</span> -->
   <!-- style="width: 100%;" -->
-  <nb-table [dataSource]="datasource.entities"></nb-table>
+  <nb-table [dataSource]="datasource.entities">
+    <ng-container *ngFor="let column of columns; let index = index">
+      <th *nbColumnHeader="column"
+          (click)="sortByColumn(column)">
+        {{ column }}
+      </th>
+      <td *nbColumnCell="column; let dataItem = dataItem">
+        {{ dataItem[column] }}
+      </td>
+    </ng-container>
+
+    <tr *nbHeaderRow></tr>
+    <tr *nbRow="let dataItem = dataItem"
+        (click)="clickRow(dataItem)"></tr>
+  </nb-table>
 </ng-container>
