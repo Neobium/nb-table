@@ -32,7 +32,7 @@ export class NbTableDirective implements INbTableDirective {
     DragDrop,
   ],
 })
-export class NbColumnHeaderDirective extends CdkDrag {
+export class NbColumnHeaderDirective extends CdkDrag implements NbTableDirective {
   @Input('nbColumnHeader') column: string;
 
   constructor(

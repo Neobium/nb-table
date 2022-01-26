@@ -1,4 +1,42 @@
 .nb-table {
   display: grid;
-  grid-template-columns: repeat(7, 100px);
+  grid-template-columns: repeat(7, auto);
+  color: #ffffff;
+  font-family: Ebrima, sans-serif;
+  font-size: 14px;
+
+  ::ng-deep th {
+    padding: 5px;
+    background-color: #363636 !important;
+    text-align: start;
+  }
+
+  ::ng-deep td {
+    padding: 5px;
+  }
+
+  $rows: 25;
+  $columns: 7;
+
+  @for $i from 1 through $rows {
+    @if $i % 2 == 0 {
+      $start: $i * 7 + 1;
+      $end: ($i * 7) + 7;
+
+      ::ng-deep td:nth-child(n + #{$start}):nth-child(-n + #{$end}) {
+        background-color: #484848;
+      }
+    }
+  }
+
+  @for $i from 1 through $rows {
+    @if $i % 2 != 0 {
+      $start: $i * 7 + 1;
+      $end: ($i * 7) + 7;
+
+      ::ng-deep td:nth-child(n + #{$start}):nth-child(-n + #{$end}) {
+        background-color: #646464;
+      }
+    }
+  }
 }

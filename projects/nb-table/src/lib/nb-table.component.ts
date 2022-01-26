@@ -6,7 +6,6 @@ import {
   QueryList,
 } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
 import { DirectiveContainer } from './nb-table-directives/directive-container';
 import {
   INbTableDirective,
@@ -49,10 +48,6 @@ export class NbTableComponent implements OnInit {
   // TODO: probably move to NbTableService
   private _dataSourceR$ = new ReplaySubject<Record<string, unknown>[]>(1);
   dataSource$: Observable<Record<string, unknown>[]> = this._dataSourceR$.asObservable();
-
-  constructor() {
-    // console.log('nb data', this._dataSource);
-  }
 
   ngOnInit(): void { }
 }
