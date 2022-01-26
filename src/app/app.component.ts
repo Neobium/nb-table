@@ -7,5 +7,5 @@ import { Person } from './services/people.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  tableColumns: string[] = Object.keys(new Person());
+  tableColumns: string[] = Object.keys(new Person()).map(x => x[0].toUpperCase().concat(x.substring(1)));
 }

@@ -6,11 +6,12 @@
   <nb-table [dataSource]="datasource.entities">
     <ng-container *ngFor="let column of columns; let index = index">
       <th *nbColumnHeader="column"
+          style="cursor: pointer;"
           (click)="sortByColumn(column)">
         {{ column }}
       </th>
       <td *nbColumnCell="column; let dataItem = dataItem">
-        {{ dataItem[column] }}
+        {{ dataItem[column.toLowerCase()] }}
       </td>
     </ng-container>
 

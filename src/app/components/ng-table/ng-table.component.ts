@@ -35,6 +35,6 @@ export class NgTableComponent implements OnInit, AfterContentInit {
   }
 
   sortByColumn(column: string): void {
-    this._peopleService.sortData(column);
+    this._peopleService.sortData(column.toLowerCase());
   }
 }

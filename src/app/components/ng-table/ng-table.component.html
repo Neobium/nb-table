@@ -9,12 +9,13 @@
                   [matColumnDef]="column">
       <th mat-header-cell
           *matHeaderCellDef
+          style="cursor: pointer;"
           (click)="sortByColumn(column)">
         {{ column }}
       </th>
       <td mat-cell
           *matCellDef="let dataItem">
-        {{ dataItem[column] }}
+        {{ dataItem[column.toLowerCase()] }}
       </td>
     </ng-container>
 
