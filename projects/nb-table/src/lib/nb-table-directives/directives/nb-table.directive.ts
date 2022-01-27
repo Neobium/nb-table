@@ -2,13 +2,16 @@ import { Directionality } from '@angular/cdk/bidi';
 import { CdkDrag, CdkDropList, CDK_DRAG_CONFIG, CDK_DROP_LIST, DragDrop, DragDropConfig } from '@angular/cdk/drag-drop';
 import { DOCUMENT } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Directive,
   ElementRef,
   Inject,
   Input,
   NgZone,
+  OnInit,
   Optional,
+  Renderer2,
   SkipSelf,
   TemplateRef,
   ViewContainerRef,
@@ -32,24 +35,14 @@ export class NbTableDirective implements INbTableDirective {
     DragDrop,
   ],
 })
-export class NbColumnHeaderDirective extends CdkDrag implements NbTableDirective {
+export class NbColumnHeaderDirective implements NbTableDirective {
   @Input('nbColumnHeader') column: string;
 
   constructor(
     public template: TemplateRef<any>,
     private _element: ElementRef<HTMLElement>,
-    @Inject(CDK_DROP_LIST) @Optional() @SkipSelf() _dropContainer: CdkDropList,
-    @Inject(DOCUMENT) _document: any,
-    _ngZone: NgZone,
     _viewContainer: ViewContainerRef,
-    @Optional() @Inject(CDK_DRAG_CONFIG) _config: DragDropConfig,
-    @Optional() _dir: Directionality,
-    _dragDrop: DragDrop,
-    _cd: ChangeDetectorRef,
-  ) {
-    super(_viewContainer.createEmbeddedView(template).rootNodes[0], _dropContainer, _document, _ngZone, _viewContainer, _config, _dir, _dragDrop, _cd);
-    console.log(_viewContainer.createEmbeddedView(template).rootNodes[0]);
-  }
+  ) { }
 }
 
 @Directive({
@@ -62,7 +55,7 @@ export class NbColumnCellDirective implements INbTableDirective {
   @Input('nbColumnCell') column: string;
 
   constructor(
-    public template: TemplateRef<any>,
+    public template: TemplateRef<{ $implicit: TemplateRef<any>; dataItem: Record<string, unknown> }>,
     private _element: ElementRef,
     private _viewContainer: ViewContainerRef,
   ) { }
@@ -89,5 +82,36 @@ export class NbRowDirective implements INbTableDirective {
     public template: TemplateRef<any>,
     private _element: ElementRef,
     private _viewContainer: ViewContainerRef,
+  ) { }
+}
+
+@Directive({
+  selector: '[nbHeaderCell]',
+  providers: [],
+})
+export class NbHeaderCellDirective extends CdkDrag implements OnInit {
+  @Input('nbHeaderCellDrag') drag: boolean = false;
+
+  ngOnInit(): void {
+    this.element.nativeElement.classList.add('nb-header-cell');
+    this.disabled = !this.drag;
+  }
+}
+
+@Directive({
+  selector: '[nbCell]',
+  providers: [],
+})
+export class NbCellDirective {
+  @Input('nbCell') set rowIndex(index: number) {
+    if (index === null || index === undefined) return;
+    this._element.nativeElement.classList.add('nb-table-cell');
+
+    this._element.nativeElement.classList.toggle('nb-row-odd', index % 2 !== 0);
+    this._element.nativeElement.classList.toggle('nb-row-even', index % 2 === 0);
+  }
+
+  constructor(
+    private _element: ElementRef
   ) { }
 }
