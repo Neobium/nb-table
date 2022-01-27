@@ -2,8 +2,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  NbCellDirective,
   NbColumnCellDirective,
   NbColumnHeaderDirective,
+  NbHeaderCellDirective,
   NbHeaderRowDirective,
   NbRowDirective,
   NbTableDirective,
@@ -16,6 +18,8 @@ import {
     NbColumnCellDirective,
     NbHeaderRowDirective,
     NbRowDirective,
+    NbHeaderCellDirective,
+    NbCellDirective
   ],
   imports: [CommonModule, DragDropModule],
   exports: [
@@ -24,6 +28,8 @@ import {
     NbColumnCellDirective,
     NbHeaderRowDirective,
     NbRowDirective,
+    NbHeaderCellDirective,
+    NbCellDirective
   ],
 })
 export class NbTableDirectivesModule { }

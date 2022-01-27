@@ -1,4 +1,5 @@
-<!-- <div cdkDropList></div> -->
+<!-- <div class="nb-header-drop"
+     cdkDropList></div> -->
 <div class="nb-table"
      *ngIf="(dataSource$ | async) as dataSource; else noData"
      [style.--dataRows]="dataSource.length"
@@ -15,12 +16,12 @@
   </ng-container>
 
   <!-- Table rows -->
-  <ng-container *ngFor="let dataItem of dataSource">
+  <ng-container *ngFor="let dataItem of dataSource; let rowIndex = index">
     <!-- {{ dataItem }} -->
     <ng-container *ngFor="let row of tableRows">
       <ng-container *ngFor="let cell of tableCells"
                     [ngTemplateOutlet]="cell.template"
-                    [ngTemplateOutletContext]="{ $implicit: row.template, dataItem: dataItem }">
+                    [ngTemplateOutletContext]="{ $implicit: row.template, dataItem: dataItem, row: rowIndex + 1 }">
       </ng-container>
     </ng-container>
   </ng-container>
