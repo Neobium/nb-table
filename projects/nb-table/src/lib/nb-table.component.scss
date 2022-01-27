@@ -28,29 +28,4 @@
   ::ng-deep .nb-row-even {
     background-color: #484848;
   }
-
-  // $rows: 25;
-  // $columns: 7;
-
-  // @for $i from 1 through $rows {
-  //   @if $i % 2 == 0 {
-  //     $start: $i * 7 + 1;
-  //     $end: ($i * 7) + 7;
-
-  //     ::ng-deep td:nth-child(n + #{$start}):nth-child(-n + #{$end}) {
-  //       background-color: #484848;
-  //     }
-  //   }
-  // }
-
-  // @for $i from 1 through $rows {
-  //   @if $i % 2 != 0 {
-  //     $start: $i * 7 + 1;
-  //     $end: ($i * 7) + 7;
-
-  //     ::ng-deep td:nth-child(n + #{$start}):nth-child(-n + #{$end}) {
-  //       background-color: #646464;
-  //     }
-  //   }
-  // }
 }
