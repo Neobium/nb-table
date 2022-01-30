@@ -1,18 +1,9 @@
-import { Directionality } from '@angular/cdk/bidi';
-import { CdkDrag, CdkDropList, CDK_DRAG_CONFIG, CDK_DROP_LIST, DragDrop, DragDropConfig } from '@angular/cdk/drag-drop';
-import { DOCUMENT } from '@angular/common';
+import { CdkDrag, DragDrop } from '@angular/cdk/drag-drop';
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
   Directive,
   ElementRef,
-  Inject,
   Input,
-  NgZone,
   OnInit,
-  Optional,
-  Renderer2,
-  SkipSelf,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
@@ -91,6 +82,7 @@ export class NbRowDirective implements INbTableDirective {
 })
 export class NbHeaderCellDirective extends CdkDrag implements OnInit {
   @Input('nbHeaderCellDrag') drag: boolean = false;
+  @Input('nbHeaderCellDragData') dragData: unknown;
 
   ngOnInit(): void {
     this.element.nativeElement.classList.add('nb-header-cell');

@@ -1,30 +1,46 @@
-<!-- <div class="nb-header-drop"
-     cdkDropList></div> -->
-<div class="nb-table"
-     *ngIf="(dataSource$ | async) as dataSource; else noData"
-     [style.--dataRows]="dataSource.length"
-     [style.--columns]="columnHeaders.length">
-  <!-- <ng-content></ng-content> -->
+<head>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+</head>
+<div class="nb-header-drop"
+     [ngClass]="{ 'has-data': selectedHeaders.length }"
+     cdkDropList
+     [cdkDropListData]="selectedHeaders"
+     (cdkDropListDropped)="drop($event)">
+  <div class="nb-selected-header"
+       *ngFor="let header of selectedHeaders; let index = index"
+       cdkDrag>
+    <span class="header-name">{{ header }}</span>
+    <mat-icon class="remove-header" (click)="removeHeader(index)">highlight_off</mat-icon>
+  </div>
+</div>
 
-  <!-- Table header -->
-  <ng-container *ngFor="let headerRow of headerRows">
-    <!-- Header columns -->
-    <ng-container *ngFor="let columnHeader of columnHeaders"
-                  [ngTemplateOutlet]="columnHeader.template"
-                  [ngTemplateOutletContext]="{ $implicit: headerRow }">
-    </ng-container>
-  </ng-container>
+<div #nbDragHeaderList>
+  <div class="nb-table"
+       *ngIf="(dataSource$ | async) as dataSource; else noData"
+       [style.--dataRows]="dataSource.length"
+       [style.--columns]="columnHeaders.length">
 
-  <!-- Table rows -->
-  <ng-container *ngFor="let dataItem of dataSource; let rowIndex = index">
-    <!-- {{ dataItem }} -->
-    <ng-container *ngFor="let row of tableRows">
-      <ng-container *ngFor="let cell of tableCells"
-                    [ngTemplateOutlet]="cell.template"
-                    [ngTemplateOutletContext]="{ $implicit: row.template, dataItem: dataItem, row: rowIndex + 1 }">
+    <!-- Table header -->
+    <ng-container *ngFor="let headerRow of headerRows">
+      <!-- Header columns -->
+      <ng-container *ngFor="let columnHeader of columnHeaders"
+                    [ngTemplateOutlet]="columnHeader.template"
+                    [ngTemplateOutletContext]="{ $implicit: headerRow.template }">
       </ng-container>
     </ng-container>
-  </ng-container>
+
+    <!-- Table rows -->
+    <ng-container *ngFor="let dataItem of dataSource; let rowIndex = index">
+      <!-- {{ dataItem }} -->
+      <ng-container *ngFor="let row of tableRows">
+        <ng-container *ngFor="let cell of tableCells"
+                      [ngTemplateOutlet]="cell.template"
+                      [ngTemplateOutletContext]="{ $implicit: row.template, dataItem: dataItem, row: rowIndex + 1 }">
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
 </div>
 
 <ng-template #noData>
