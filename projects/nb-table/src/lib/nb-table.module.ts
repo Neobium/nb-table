@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NbTableDirectivesModule } from './nb-table-directives/nb-table-directives.module';
 import { NbTableComponent } from './nb-table.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { NbTableComponent } from './nb-table.component';
   imports: [
     BrowserModule,
     DragDropModule,
-    NbTableDirectivesModule
+    MatIconModule,
+    NbTableDirectivesModule,
   ],
   exports: [
     NbTableComponent,

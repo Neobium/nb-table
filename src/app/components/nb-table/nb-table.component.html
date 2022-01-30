@@ -5,13 +5,15 @@
     <ng-container *ngFor="let column of columns; let index = index">
       <th *nbColumnHeader="column"
           [nbHeaderCell]
+          [nbHeaderCellDrag]="true"
+          [nbHeaderCellDragData]="column"
           style="cursor: pointer;"
           (click)="sortByColumn(column)">
         {{ column }}
       </th>
       <td *nbColumnCell="column; let dataItem = dataItem; let row = row"
           [nbCell]="row">
-        {{ dataItem[column.toLowerCase()] }} {{ row }}
+        {{ dataItem[column.toLowerCase()] }}
       </td>
     </ng-container>
 

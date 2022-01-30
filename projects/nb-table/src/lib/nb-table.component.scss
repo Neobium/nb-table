@@ -1,18 +1,51 @@
+:host {
+  color: #ffffff;
+  font-family: Ebrima, sans-serif;
+  font-size: 14px;
+}
+
 .nb-header-drop {
-  width: 100%;
-  height: 20px;
-  background-color: hotpink;
+  display: flex;
+  flex-flow: row;
+  background-color: #646464;
+
+  &.has-data {
+    padding: 5px;
+  }
+
+  .nb-selected-header {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    margin: 3px;
+    padding: 2px 0px 2px 8px;
+    background-color: #484848;
+    border: 1px solid #363636;
+    border-radius: 5px;
+
+    .remove-header {
+      font-size: 16px;
+      margin-left: 7px;
+      line-height: 26px;
+
+      &:hover {
+        cursor: pointer;
+        color: cadetblue;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
 }
 
 .nb-table {
   display: grid;
-  grid-template-columns: repeat(7, auto);
-  color: #ffffff;
-  font-family: Ebrima, sans-serif;
-  font-size: 14px;
+  grid-template-columns: repeat(var(--columns), auto);
 
   ::ng-deep .nb-header-cell {
-    padding: 5px;
+    padding: 8px 5px;
     background-color: #363636;
     text-align: start;
   }
