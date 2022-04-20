@@ -11,7 +11,8 @@
        *ngFor="let header of selectedHeaders; let index = index"
        cdkDrag>
     <span class="header-name">{{ header }}</span>
-    <mat-icon class="remove-header" (click)="removeHeader(index)">highlight_off</mat-icon>
+    <mat-icon class="remove-header"
+              (click)="removeHeader(index)">highlight_off</mat-icon>
   </div>
 </div>
 
@@ -36,7 +37,7 @@
       <ng-container *ngFor="let row of tableRows">
         <ng-container *ngFor="let cell of tableCells"
                       [ngTemplateOutlet]="cell.template"
-                      [ngTemplateOutletContext]="{ $implicit: row.template, dataItem: dataItem, row: rowIndex + 1 }">
+                      [ngTemplateOutletContext]="{ $implicit: row.template, dataItem: dataItem, row: rowIndex }">
         </ng-container>
       </ng-container>
     </ng-container>
