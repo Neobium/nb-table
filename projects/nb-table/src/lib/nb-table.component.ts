@@ -1,18 +1,22 @@
 import { CdkDragDrop, DragDrop, DragRef, DropListRef, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
+  ChangeDetectorRef,
   Component,
   ContentChildren,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   QueryList,
   ViewChild,
 } from '@angular/core';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DirectiveContainer } from './nb-table-directives/directive-container';
 import {
   INbTableDirective,
+  NbCellDirective,
   NbColumnCellDirective,
   NbColumnHeaderDirective,
   NbHeaderCellDirective,
@@ -20,6 +24,7 @@ import {
   NbRowDirective,
   NbTableDirective,
 } from './nb-table-directives/directives/nb-table.directive';
+import { NbTableService } from './nb-table.service';
 
 @Component({
   selector: 'nb-table',
@@ -28,13 +33,13 @@ import {
 })
 export class NbTableComponent implements OnInit, OnDestroy {
   @Input() set dataSource(source: Record<string, unknown>[]) {
-    console.log('nb data', source);
-    this._dataSource = source;
-    this._dataSourceR$.next(this._dataSource);
+    // console.log('nb data', source);
+    console.log('set datasource');
+    this._tableService.setSource(source);
   }
 
   @ContentChildren(NbTableDirective) set cells(_cells: QueryList<INbTableDirective>) {
-    console.log(_cells.toArray());
+    // console.log(_cells.toArray());
     this._directiveContainer = new DirectiveContainer(_cells);
     this.headerRows = this._directiveContainer.getHeaderRowDirectives();
     this._originalColumnHeaders = this._directiveContainer.getColumnHeaderDirectives();
@@ -60,6 +65,13 @@ export class NbTableComponent implements OnInit, OnDestroy {
     });
   }
 
+  // @ContentChildren(NbCellDirective) set dataCells(_dataCells: QueryList<NbCellDirective>) {
+  //   console.log(_dataCells);
+  //   this._dataCells = _dataCells;
+  // }
+
+  @Output() selectedColumns = new EventEmitter<Array<string>>();
+
   @ViewChild('nbDragHeaderList') private _nbDragHeaderList: HTMLElement;
 
   private _directiveContainer: DirectiveContainer;
@@ -67,15 +79,12 @@ export class NbTableComponent implements OnInit, OnDestroy {
   columnHeaders: NbColumnHeaderDirective[];
   tableRows: NbRowDirective[];
   tableCells: NbColumnCellDirective[];
+  private _dataCells: QueryList<NbCellDirective>;
 
   private _originalColumnHeaders: NbColumnHeaderDirective[];
   private _originalTableCells: NbColumnCellDirective[];
 
-  private _dataSource: Record<string, unknown>[];
-
-  // TODO: probably move to NbTableService
-  private _dataSourceR$ = new ReplaySubject<Record<string, unknown>[]>(1);
-  dataSource$: Observable<Record<string, unknown>[]> = this._dataSourceR$.asObservable();
+  dataSource$: Observable<Record<string, unknown>[]> = this._tableService.dataSource$;
 
   private _dropListRef: DropListRef<unknown>;
   private _dragRefs: DragRef[];
@@ -84,7 +93,7 @@ export class NbTableComponent implements OnInit, OnDestroy {
 
   private _unsubscriber = new Subject<void>();
 
-  constructor(private _dragDrop: DragDrop) { }
+  constructor(private _tableService: NbTableService, private _dragDrop: DragDrop, private _cd: ChangeDetectorRef) { }
 
   ngOnInit(): void { }
 
@@ -104,7 +113,10 @@ export class NbTableComponent implements OnInit, OnDestroy {
   }
 
   private _rearrangeColumns(): void {
+    this.selectedColumns.emit(this.selectedHeaders);
+    this._tableService.setSelectedColumns(this.selectedHeaders);
     this._resetOrder();
+
     this.columnHeaders = this.columnHeaders.sort((h1, h2) => this._determineOrder(h1, h2));
     this.tableCells = this.tableCells.sort((c1, c2) => this._determineOrder(c1, c2));
   }

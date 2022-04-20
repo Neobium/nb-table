@@ -30,7 +30,7 @@
 
       &:hover {
         cursor: pointer;
-        color: cadetblue;
+        color: #d8412d;
       }
 
       &:active {
@@ -52,6 +52,16 @@
 
   ::ng-deep .nb-table-cell {
     padding: 5px;
+
+    @for $n from 1 through 25 {
+      &.nb-span-#{$n} {
+        grid-row-start: span $n;
+      }
+    }
+
+    &.nb-span-hidden {
+      display: none;
+    }
   }
 
   ::ng-deep .nb-row-odd {

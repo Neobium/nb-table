@@ -20,7 +20,7 @@ export class NbTableComponent implements OnInit, AfterContentInit {
   private _startTime: number = new Date().getTime();
   endTime: number;
 
-  constructor(private _peopleService: PeopleService) {}
+  constructor(private _peopleService: PeopleService) { }
 
   ngOnInit(): void {
     this.datasource$ = this._peopleService.getPeople$(25);
@@ -36,5 +36,10 @@ export class NbTableComponent implements OnInit, AfterContentInit {
 
   sortByColumn(column: string): void {
     this._peopleService.sortData(column.toLowerCase());
+  }
+
+  sortByColumns(columns: Array<string>): void {
+    console.log(columns);
+    if (columns?.length >= 1) this._peopleService.sortData(columns[0].toLowerCase());
   }
 }
