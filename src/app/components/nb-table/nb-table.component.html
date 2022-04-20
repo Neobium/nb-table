@@ -1,7 +1,8 @@
 <ng-container *ngIf="(datasource$ | async) as datasource">
   <span>Neobium table</span>
 
-  <nb-table [dataSource]="datasource.entities">
+  <nb-table [dataSource]="datasource.entities"
+            (selectedColumns)="sortByColumns($event)">
     <ng-container *ngFor="let column of columns; let index = index">
       <th *nbColumnHeader="column"
           [nbHeaderCell]
@@ -12,7 +13,8 @@
         {{ column }}
       </th>
       <td *nbColumnCell="column; let dataItem = dataItem; let row = row"
-          [nbCell]="row">
+          [nbCell]="column"
+          [nbCellRow]="row">
         {{ dataItem[column.toLowerCase()] }}
       </td>
     </ng-container>

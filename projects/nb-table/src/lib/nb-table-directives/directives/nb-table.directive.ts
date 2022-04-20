@@ -1,12 +1,18 @@
 import { CdkDrag, DragDrop } from '@angular/cdk/drag-drop';
 import {
+  AfterViewChecked,
+  ChangeDetectorRef,
   Directive,
   ElementRef,
   Input,
+  OnDestroy,
   OnInit,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { NbTableService } from '../../nb-table.service';
 
 export interface INbTableDirective {
   template: TemplateRef<any>;
@@ -94,16 +100,78 @@ export class NbHeaderCellDirective extends CdkDrag implements OnInit {
   selector: '[nbCell]',
   providers: [],
 })
-export class NbCellDirective {
-  @Input('nbCell') set rowIndex(index: number) {
+export class NbCellDirective implements AfterViewChecked, OnDestroy {
+  @Input('nbCell') column: string;
+  @Input('nbCellRow') set rowIndex(index: number) {
     if (index === null || index === undefined) return;
+    this._rowIndex = index;
     this._element.nativeElement.classList.add('nb-table-cell');
 
-    this._element.nativeElement.classList.toggle('nb-row-odd', index % 2 !== 0);
-    this._element.nativeElement.classList.toggle('nb-row-even', index % 2 === 0);
+    this._element.nativeElement.classList.toggle('nb-row-odd', (index + 1) % 2 !== 0);
+    this._element.nativeElement.classList.toggle('nb-row-even', (index + 1) % 2 === 0);
   }
 
+  private _rowIndex: number;
+  private _subscription: Subscription;
+
   constructor(
-    private _element: ElementRef
+    private _element: ElementRef,
+    private _tableService: NbTableService,
+    private _cd: ChangeDetectorRef,
   ) { }
+
+  ngAfterViewChecked(): void {
+    this._subscription = this._tableService.tableState$.pipe(take(1)).subscribe(tableState => {
+      const cellId = `${this.column}-${this._rowIndex}`;
+      const classList = this._element.nativeElement.classList;
+      const spannedCells = tableState.spans;
+      const hiddenCells = tableState.hiddenCells;
+
+      for (var i = 0, l = classList.length; i < l; ++i) {
+        if (/nb-span-.*/.test(classList[i])) {
+          classList.remove(classList[i]);
+        }
+      }
+
+      if (spannedCells.has(cellId)) {
+        const span = spannedCells.get(cellId);
+        this._element.nativeElement.classList.add(`nb-span-${span.span}`);
+      }
+
+      if (hiddenCells.includes(cellId)) {
+        this._element.nativeElement.classList.add('nb-span-hidden');
+      }
+    })
+    // this._subscription = this._tableService.dataSource$.pipe(take(1), map(x => x.map(y => y[this.column.toLowerCase()]))).subscribe((dataSource) => {
+    //   const cellId = `${this.column}${this._rowIndex}`;
+
+    //   // Hide duplicate cells
+    //   const duplicate = this._rowIndex !== 0 && dataSource[(this._rowIndex - 1)] === dataSource[this._rowIndex];
+    //   this._element.nativeElement.classList.toggle('nb-hidden', duplicate);
+
+
+    //   const span = dataSource.slice(this._rowIndex).filter((v, i, a) => (v === a[(i + 1)] || v === a[(i - 1)]) && v === a[0]);
+    //   console.log(span);
+    //   const spanConfig = { column: this.column, rowIndex: this._rowIndex, span: !duplicate ? span.length : null };
+
+
+    //   if (this._tableService.spannedCells.has(cellId)) {
+    //     console.log('remove', cellId);
+    //     const currentSpan = this._tableService.spannedCells.get(cellId);
+    //     console.log(currentSpan, this._element.nativeElement.classList);
+    //     this._element.nativeElement.classList.remove(`nb-span-${currentSpan.span}`);
+    //     this._tableService.spannedCells.delete(cellId);
+    //   }
+
+    //   if (spanConfig.span > 1 && spanConfig.rowIndex === this._rowIndex) {
+    //     console.log('add', cellId);
+    //     this._tableService.spannedCells.set(cellId, spanConfig);
+    //     this._element.nativeElement.classList.add(`nb-span-${spanConfig?.span}`);
+    //   }
+    // });
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
 }
