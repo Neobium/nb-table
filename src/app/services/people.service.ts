@@ -16,7 +16,7 @@ export class Person {
     public weight?: number,
     public city?: string,
     public country?: string
-  ) {}
+  ) { }
 }
 
 @Injectable()
@@ -36,6 +36,7 @@ export class PeopleService {
     return this._datasourceR$.asObservable().pipe(
       map(() => {
         const pagedEntities = this._datasource.entities.slice(0, pageSize);
+        // .sort((a, b) => (a.country < b.country) ? -1 : 1)
         return { entities: pagedEntities, total: pagedEntities.length };
       })
     );

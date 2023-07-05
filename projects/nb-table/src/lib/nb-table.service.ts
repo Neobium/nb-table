@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
 export class SpannedCell {
   column: string;
@@ -21,22 +21,54 @@ export class NbTableService {
   private _dataSource: Record<string, unknown>[];
   private _dataSourceB$ = new BehaviorSubject<Record<string, unknown>[]>(null);
   dataSource$: Observable<Record<string, unknown>[]> = this._dataSourceB$.asObservable();
+  dataSource: WritableSignal<Record<string, unknown>[]> = signal([]);
+
+  private _cellRenderQueue: Array<string> = [];
+  private _cellRenderQueueB$ = new Subject<Array<string>>();
+  stable$: Observable<boolean>;
 
   tableState$: Observable<TableState>;
+  tableState: Signal<TableState>;
   private _selectedColumns = new Subject<string[]>();
+  private _selectedColumnsSig: WritableSignal<string[]> = signal([]);
 
 
   constructor() {
     this._observeSpannedCells();
+
+    this.stable$ = this._cellRenderQueueB$.asObservable()
+      .pipe(
+        map((queue) => queue.length === 0),
+        distinctUntilChanged()
+      );
   }
 
   setSource(source: Record<string, unknown>[]): void {
     this._dataSource = source;
     this._dataSourceB$.next(source);
+    this.dataSource.set(source);
   }
 
   setSelectedColumns(columns: string[]): void {
     this._selectedColumns.next(columns);
+    this._selectedColumnsSig.set(columns);
+  }
+
+  registerCell(cellId: string): void {
+    if (this._cellRenderQueue.includes(cellId)) return;
+
+    this._cellRenderQueue = [...this._cellRenderQueue, cellId];
+    this._cellRenderQueueB$.next(this._cellRenderQueue);
+  }
+
+  unregisterCell(cellId: string): void {
+    if (!this._cellRenderQueue.includes(cellId)) return;
+
+    const index = this._cellRenderQueue.findIndex((id) => id === cellId);
+    if (index >= 0) {
+      this._cellRenderQueue.splice(index, 1);
+      this._cellRenderQueueB$.next(this._cellRenderQueue);
+    }
   }
 
   private _observeSpannedCells(): void {
@@ -45,7 +77,9 @@ export class NbTableService {
       this._selectedColumns.asObservable()
     ]).pipe(map(([source, columns]) => this._mapToTableState(source, columns)));
 
-    this.tableState$.subscribe(console.log);
+    this.tableState = computed(() => this._mapToTableState(this.dataSource(), this._selectedColumnsSig()));
+
+    // this.tableState$.subscribe(console.log);
   }
 
   private _mapToTableState(source: Record<string, unknown>[], columns: string[]): TableState {

@@ -2,11 +2,11 @@
   "name": "nb-table",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/animations": "~13.1.2",
-    "@angular/cdk": "^13.1.2",
-    "@angular/common": "^13.1.2",
-    "@angular/core": "^13.1.2",
-    "@angular/material": "^13.1.2"
+    "@angular/animations": "^16.1.2",
+    "@angular/cdk": "^16.1.2",
+    "@angular/common": "^16.1.2",
+    "@angular/core": "^16.1.2",
+    "@angular/material": "^16.1.2"
   },
   "dependencies": {
     "tslib": "^2.3.0"

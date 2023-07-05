@@ -17,17 +17,16 @@ export class NgTableComponent implements OnInit, AfterContentInit {
 
   datasource$: Observable<Datasource<Person>>;
 
-  private _startTime: number = new Date().getTime();
-  endTime: number;
-
-  constructor(private _peopleService: PeopleService) {}
+  constructor(private _peopleService: PeopleService) {
+    console.time('render ng-table');
+  }
 
   ngOnInit(): void {
     this.datasource$ = this._peopleService.getPeople$(25);
   }
 
   ngAfterContentInit(): void {
-    this.endTime = new Date().getTime() - this._startTime;
+    console.timeEnd('render ng-table');
   }
 
   clickRow(row: any): void {

@@ -17,17 +17,16 @@ export class NbTableComponent implements OnInit, AfterContentInit {
 
   datasource$: Observable<Datasource<Person>>;
 
-  private _startTime: number = new Date().getTime();
-  endTime: number;
-
-  constructor(private _peopleService: PeopleService) { }
+  constructor(private _peopleService: PeopleService) {
+    console.time('render nb-table');
+  }
 
   ngOnInit(): void {
     this.datasource$ = this._peopleService.getPeople$(25);
   }
 
   ngAfterContentInit(): void {
-    this.endTime = new Date().getTime() - this._startTime;
+    console.timeEnd('render nb-table');
   }
 
   clickRow(row: any): void {
@@ -39,7 +38,6 @@ export class NbTableComponent implements OnInit, AfterContentInit {
   }
 
   sortByColumns(columns: Array<string>): void {
-    console.log(columns);
     if (columns?.length >= 1) this._peopleService.sortData(columns[0].toLowerCase());
   }
 }

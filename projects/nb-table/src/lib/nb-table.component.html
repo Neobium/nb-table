@@ -11,6 +11,7 @@
        *ngFor="let header of selectedHeaders; let index = index"
        cdkDrag>
     <span class="header-name">{{ header }}</span>
+    <!-- TODO - remove material icon with neobium icon -->
     <mat-icon class="remove-header"
               (click)="removeHeader(index)">highlight_off</mat-icon>
   </div>
@@ -18,7 +19,7 @@
 
 <div #nbDragHeaderList>
   <div class="nb-table"
-       *ngIf="(dataSource$ | async) as dataSource; else noData"
+       *ngIf="dataSourceSig() as dataSource; else noData"
        [style.--dataRows]="dataSource.length"
        [style.--columns]="columnHeaders.length">
 
