@@ -19,7 +19,7 @@
 
 <div #nbDragHeaderList>
   <div class="nb-table"
-       *ngIf="(dataSource$ | async) as dataSource; else noData"
+       *ngIf="dataSourceSig() as dataSource; else noData"
        [style.--dataRows]="dataSource.length"
        [style.--columns]="columnHeaders.length">
 

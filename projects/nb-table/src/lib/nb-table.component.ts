@@ -9,6 +9,7 @@ import {
   OnInit,
   Output,
   QueryList,
+  Signal,
   ViewChild,
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
@@ -33,13 +34,10 @@ import { NbTableService } from './nb-table.service';
 })
 export class NbTableComponent implements OnInit, OnDestroy {
   @Input() set dataSource(source: Record<string, unknown>[]) {
-    // console.log('nb data', source);
-    console.log('set datasource');
     this._tableService.setSource(source);
   }
 
   @ContentChildren(NbTableDirective) set cells(_cells: QueryList<INbTableDirective>) {
-    // console.log(_cells.toArray());
     this._directiveContainer = new DirectiveContainer(_cells);
     this.headerRows = this._directiveContainer.getHeaderRowDirectives();
     this._originalColumnHeaders = this._directiveContainer.getColumnHeaderDirectives();
@@ -85,6 +83,7 @@ export class NbTableComponent implements OnInit, OnDestroy {
   private _originalTableCells: NbColumnCellDirective[];
 
   dataSource$: Observable<Record<string, unknown>[]> = this._tableService.dataSource$;
+  dataSourceSig: Signal<Record<string, unknown>[]> = this._tableService.dataSource;
 
   private _dropListRef: DropListRef<unknown>;
   private _dragRefs: DragRef[];
@@ -93,7 +92,14 @@ export class NbTableComponent implements OnInit, OnDestroy {
 
   private _unsubscriber = new Subject<void>();
 
-  constructor(private _tableService: NbTableService, private _dragDrop: DragDrop, private _cd: ChangeDetectorRef) { }
+  constructor(private _tableService: NbTableService, private _dragDrop: DragDrop, private _cd: ChangeDetectorRef) {
+    this._tableService.stable$.pipe(takeUntil(this._unsubscriber)).subscribe((stable) => {
+      if (stable) {
+        this._resetOrder();
+        this._rearrangeColumns();
+      }
+    });
+  }
 
   ngOnInit(): void { }
 
